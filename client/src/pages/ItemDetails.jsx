@@ -13,32 +13,35 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { getItemById } from "@/api/itemsApi";
 
 const ItemDetails = () => {
-  const [item, setItem] = useState({
-    id: "itm001",
-    name: "Cordless Drill",
-    description:
-      "18V cordless drill, lightly used. Perfect for home projects and DIY tasks.",
-    category: "Tools",
-    owner: "Alice Johnson",
-    condition: "Good",
-    available: true,
-    image:
-      "https://images.unsplash.com/photo-1581147036324-c1c89c2c8b5c?w=400&h=300&fit=crop",
-    borrowedBy: null,
-    location: {
-      lat: 28.4595,
-      lng: 77.0266,
-      address: "Block A, Sector 45",
-    },
-  });
+  const [item, setItem] = useState(null);
 
   const [loading, setLoading] = useState(false);
   const [requesting, setRequesting] = useState(false);
 
+  const { id } = useParams();
+
+  useEffect(()=> {
+    fetchItem();
+  }, [])
+
   // TODO: Implement API integration
-  const fetchItem = async () => {};
+  const fetchItem = async () => {
+    setLoading(true);
+    try{
+      console.log("Called item details api")
+      const data = await getItemById(id);
+      setItem(data);
+    }catch(err){
+      console.log("Failed to fetch item", err);
+      toast.error("Item not found");
+    }
+    finally{
+      setLoading(false);
+    }
+  };
 
   // TODO: Implement API integration
   const handleRequestBorrow = async () => {};
